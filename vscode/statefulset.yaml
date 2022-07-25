@@ -54,8 +54,8 @@ spec:
           value: /home/jovyan/.cache
         # Set the home directory explicitly to ensure it matches the PVC. Otherwise our home
         # directory won't be durable.
-        - name: HOME
-          value: /home/jovyan
+        # - name: HOME
+        #   value: /home/jupyter
         #image: tensorflow/tensorflow:2.3.1-jupyter
         image: tensorflow
         name: box
@@ -85,7 +85,7 @@ spec:
             cpu: "4"
             memory: 4Gi
         # volumeMounts:
-        # - mountPath: /home/jovyan
+        # - mountPath: /home/jupyter
         #   name: workspace
         # - mountPath: /dev/shm
         #   name: dshm
@@ -112,7 +112,7 @@ spec:
       # volumes:
       # - name: workspace
       #   persistentVolumeClaim:
-      #     claimName: workspace-jlewi-nb # {"$kpt-set":"pvc-name"}
+      #     claimName: box
       # - name: ssh
       #   secret:
       #     secretName: git-creds

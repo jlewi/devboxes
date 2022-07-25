@@ -6,10 +6,9 @@ labels:
 - includeSelectors: true
   pairs:
     app: jlewi-box
-#- application.yaml
-#- deployment.yaml
 resources:
 - statefulset.yaml
+- pvc.yaml
 images:
 - name: tensorflow
-  newName: gcr.io/deeplearning-platform-release/tf-cpu.2-9
+  newName: gcr.io/deeplearning-platform-release/base-cpu
