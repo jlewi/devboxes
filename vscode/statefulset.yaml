@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: box
+spec:
+  # ports:
+  # - name: http
+  #   port: 80
+  #   protocol: TCP
+  #   targetPort: 8888
+  selector:
+    component: pod
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: box
+spec:
+  # https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+  # N.B. This is an attempt to ensure that when we update the statefulset we will kick the pod
+  # even if there is only one pod.
+  podManagementPolicy: Parallel
+  replicas: 1
+  revisionHistoryLimit: 10
+  serviceName: box
+  template:
+    metadata:
+      labels:    
+        component: pod
+    spec:
+      securityContext:
+        # 1000 = jovyan
+        runAsUser: 1000
+        runAsGroup: 100
+        # Mount the PVC as a group that the user belongs to.
+        fsGroup: 100
+      containers:
+      - env:
+        - name: NB_PREFIX
+          value: /notebook/default-profile/jlewi-nb/
+        - name: NB_USER
+          value: jovyan
+        # TODO(jlewi): I got an error: 
+        #- name: JUPYTERLAB_DIR # Set the JUPYTERLAB_DIR so we can install extensions        
+        #  value: /home/jovyan/.jupyterlab_dir
+        # Use a stock  Jupyter image.
+        #
+        # Note: TF doesn't appear to have jupyterlab
+        # Set hugging face's cache directory to be on the PD. This is for permission reasons,
+        # size reasons, as well as durability.        
+        - name: TRANSFORMERS_CACHE
+          value: /home/jovyan/.cache
+        # Set the home directory explicitly to ensure it matches the PVC. Otherwise our home
+        # directory won't be durable.
+        - name: HOME
+          value: /home/jovyan
+        #image: tensorflow/tensorflow:2.3.1-jupyter
+        image: tensorflow
+        name: box
+        # Explicitly set the command so we can use off the shelf notebook images.
+        command:
+        - tail
+        - -f
+        - /dev/null
+        # command:        
+        # - jupyter 
+        # - notebook 
+        # - --notebook-dir=/home/$(NB_USER)
+        # - --ip=0.0.0.0 
+        # - --no-browser 
+        # - --allow-root 
+        # - --port=8888 
+        # - --NotebookApp.token='' 
+        # - --NotebookApp.password='' 
+        # - --NotebookApp.allow_origin='*' 
+        # - --NotebookApp.base_url=$(NB_PREFIX)
+        resources:
+          limits:
+            # nvidia.com/gpu: 0 # {"$kpt-set":"numGpus"}
+            cpu: "8"
+            memory: 16Gi
+          requests:
+            cpu: "4"
+            memory: 4Gi
+        # volumeMounts:
+        # - mountPath: /home/jovyan
+        #   name: workspace
+        # - mountPath: /dev/shm
+        #   name: dshm
+        # - mountPath: /secret/ssh-key
+        #   name: ssh
+        #   readOnly: true
+      # # Start a container running theia which is an IDE
+      # - image: theiaide/theia:next # TODO(jlewi): Should we use an image which actually includes an appropriate toolchain like python?
+      #   name: theia
+      #   resources:
+      #     requests:
+      #       cpu: "4"
+      #       memory: 1.0Gi
+      #     limits:
+      #       cpu: "16"
+      #       memory: 8.0Gi
+      #   volumeMounts:
+      #   - mountPath: /mount/jovyan
+      #     name: workspace
+      #   - mountPath: /secret/ssh-key
+      #     name: ssh
+      #     readOnly: true
+      # serviceAccountName: default-editor
+      # volumes:
+      # - name: workspace
+      #   persistentVolumeClaim:
+      #     claimName: workspace-jlewi-nb # {"$kpt-set":"pvc-name"}
+      # - name: ssh
+      #   secret:
+      #     secretName: git-creds
+      # - emptyDir:
+      #     medium: Memory
+      #   name: dshm
