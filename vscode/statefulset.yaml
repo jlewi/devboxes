@@ -96,21 +96,24 @@ spec:
         #   readOnly: true
       # TODO(jlewi): autopilot doesn't allow NET_ADMIN
       # Will this work without it
-      # - name: tailscale
-      #   image: ghcr.io/tailscale/tailscale:latest
-      #   env:
-      #     # Store the state in a k8s secret
-      #     # Can this be the same secret as TS_AUTH_KEY?
-      #     - name: TS_KUBE_SECRET
-      #       value: tailscale
-      #     - name: TS_USERSPACE
-      #       value: "false"
-      #     - name: TS_AUTH_KEY
-      #       valueFrom:
-      #         secretKeyRef:
-      #           name: tailscale-auth
-      #           key: AUTH_KEY
-      #           optional: true
+      - name: tailscale
+        image: ghcr.io/tailscale/tailscale:latest
+        env:
+          # Store the state in a k8s secret
+          # Can this be the same secret as TS_AUTH_KEY?
+          - name: TS_KUBE_SECRET
+            value: tailscale
+          - name: TS_USERSPACE
+            value: "true"
+          - name: TS_AUTH_KEY
+            valueFrom:
+              secretKeyRef:
+                name: tailscale-auth
+                key: AUTH_KEY
+                optional: true
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
       #   securityContext:
       #     capabilities:
       #       add:
@@ -132,7 +135,7 @@ spec:
       #   - mountPath: /secret/ssh-key
       #     name: ssh
       #     readOnly: true
-      # serviceAccountName: default-editor
+      serviceAccountName: dev
       # volumes:
       # - name: workspace
       #   persistentVolumeClaim:

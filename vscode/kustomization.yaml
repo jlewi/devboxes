@@ -9,6 +9,7 @@ labels:
 resources:
 - statefulset.yaml
 - pvc.yaml
+- sa.yaml
 images:
 - digest: sha256:3384aebb92c6d7c4d22958b1bcc7e2443ddcf6656d78ee3464a5b010077ce7bc
   name: tensorflow
