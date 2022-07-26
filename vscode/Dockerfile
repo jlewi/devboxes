@@ -12,6 +12,10 @@ FROM $BASE_IMAGE
 
 USER root
 
-RUN pip install --upgrade tensorflow-federated
+# RUN pip install --upgrade tensorflow-federated
+
+RUN cd /tmp && \
+    wget -O vscode.deb  "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" && \
+    dpkg -i vscode.deb    
 
 USER jupyter
