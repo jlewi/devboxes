@@ -4,32 +4,23 @@
 CONTEXT=label-bot-dev
 
 PROJECT ?= dev-bytetoko
-IMG ?= gcr.io/${PROJECT}/vscode
+IMG ?= gcr.io/${PROJECT}/de
 
 .PHONY: build
 build-dir: 
 	mkdir  -p ./.build
 
 build: build-dir
-	skaffold build --file-output .build/image.json
-	@echo Built $(IMG):latest
-	@echo Built $(IMG):$(TAG)
+	skaffold build --timestamps=true -v info  --file-output .build/image.json
+	NEWIMAGE=$$(yq e ".builds[0].tag" .build/image.json) && \
+		@echo Built $NEWIMAGE
 
 build-gcb: build-dir	
 	gcloud builds submit --machine-type=n1-highcpu-32 --project=$(PROJECT) --tag=$(IMG):$(TAG) \
 		--timeout=3600 ./.build
 	@echo Built $(IMG):$(TAG)
 
-push: build
-	docker push $(IMG):$(TAG) 
-	docker push $(IMG):latest
-
-
-apply:
-	# TODO(jlewi): What's the best way to make sure the statefulset pod gets kicked?
-	# should we delete it manually or could we add a unique annotation?
-	kustomize build | kubectl --context=$(CONTEXT) apply -f -
-	kubectl --context=$(CONTEXT) \
- 		-n $(shell yq r Kptfile openAPI.definitions["io.k8s.cli.setters.namespace"].["x-k8s-cli"].setter.value) \
- 		delete pods \
- 		$(shell yq r Kptfile openAPI.definitions["io.k8s.cli.setters.name"].["x-k8s-cli"].setter.value)-0
+set-image:
+  # $$ escapes the $ so that Make doesn't do the substitution but differs it to the sheel
+	NEWIMAGE=$$(yq e ".builds[0].tag" .build/image.json) && \
+	kustomize edit set image tensorflow=$${NEWIMAGE}

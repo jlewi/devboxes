@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: box
 spec:
-  # ports:
-  # - name: http
-  #   port: 80
-  #   protocol: TCP
-  #   targetPort: 8888
+  ports:
+  - name: http
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
   selector:
     component: pod
   clusterIP: None
@@ -38,10 +38,10 @@ spec:
         fsGroup: 100
       containers:
       - env:
-        - name: NB_PREFIX
-          value: /notebook/default-profile/jlewi-nb/
+        #- name: NB_PREFIX
+        #  value: /notebook/default-profile/jlewi-nb/
         - name: NB_USER
-          value: jovyan
+          value: jupyter
         # TODO(jlewi): I got an error: 
         #- name: JUPYTERLAB_DIR # Set the JUPYTERLAB_DIR so we can install extensions        
         #  value: /home/jovyan/.jupyterlab_dir
@@ -60,22 +60,22 @@ spec:
         image: tensorflow
         name: box
         # Explicitly set the command so we can use off the shelf notebook images.
-        command:
-        - tail
-        - -f
-        - /dev/null
-        # command:        
-        # - jupyter 
-        # - notebook 
-        # - --notebook-dir=/home/$(NB_USER)
-        # - --ip=0.0.0.0 
-        # - --no-browser 
-        # - --allow-root 
-        # - --port=8888 
-        # - --NotebookApp.token='' 
-        # - --NotebookApp.password='' 
-        # - --NotebookApp.allow_origin='*' 
-        # - --NotebookApp.base_url=$(NB_PREFIX)
+        # command:
+        # - tail
+        # - -f
+        # - /dev/null
+        command:        
+        - jupyter 
+        - notebook 
+        - --notebook-dir=/home/$(NB_USER)
+        - --ip=0.0.0.0 
+        - --no-browser 
+        - --allow-root 
+        - --port=8888 
+        - --NotebookApp.token='' 
+        - --NotebookApp.password='' 
+        - --NotebookApp.allow_origin='*' 
+        #- --NotebookApp.base_url=$(NB_PREFIX)
         resources:
           limits:
             # nvidia.com/gpu: 0 # {"$kpt-set":"numGpus"}
@@ -94,6 +94,28 @@ spec:
         # - mountPath: /secret/ssh-key
         #   name: ssh
         #   readOnly: true
+      # TODO(jlewi): autopilot doesn't allow NET_ADMIN
+      # Will this work without it
+      # - name: tailscale
+      #   image: ghcr.io/tailscale/tailscale:latest
+      #   env:
+      #     # Store the state in a k8s secret
+      #     # Can this be the same secret as TS_AUTH_KEY?
+      #     - name: TS_KUBE_SECRET
+      #       value: tailscale
+      #     - name: TS_USERSPACE
+      #       value: "false"
+      #     - name: TS_AUTH_KEY
+      #       valueFrom:
+      #         secretKeyRef:
+      #           name: tailscale-auth
+      #           key: AUTH_KEY
+      #           optional: true
+      #   securityContext:
+      #     capabilities:
+      #       add:
+      #       - NET_ADMIN
+
       # # Start a container running theia which is an IDE
       # - image: theiaide/theia:next # TODO(jlewi): Should we use an image which actually includes an appropriate toolchain like python?
       #   name: theia

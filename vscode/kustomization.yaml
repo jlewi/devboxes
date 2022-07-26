@@ -10,5 +10,6 @@ resources:
 - statefulset.yaml
 - pvc.yaml
 images:
-- name: tensorflow
-  newName: gcr.io/deeplearning-platform-release/base-cpu
+- digest: sha256:3384aebb92c6d7c4d22958b1bcc7e2443ddcf6656d78ee3464a5b010077ce7bc
+  name: tensorflow
+  newName: gcr.io/dev-bytetoko/devbox:2c2ed3a-dirty
