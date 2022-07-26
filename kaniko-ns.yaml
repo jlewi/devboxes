@@ -1,0 +1,8 @@
+# Setup the kaniko namespace
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    iam.gke.io/gcp-service-account: kaniko@dev-bytetoko.iam.gserviceaccount.com
+  name: kaniko
+  namespace: kaniko

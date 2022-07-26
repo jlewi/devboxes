@@ -1,0 +1,20 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
+  name: vscode
+build:
+  artifacts:
+  - image: gcr.io/dev-bytetoko/devbox
+    context: .
+    kaniko:
+      dockerfile: Dockerfile
+  cluster:
+    namespace: kaniko
+    serviceAccount: kaniko
+    resources:
+      requests:
+        cpu: 4
+        memory: 8Gi
+        ephmeralStorage: 10Gi
+deploy:
+  kustomize: {}

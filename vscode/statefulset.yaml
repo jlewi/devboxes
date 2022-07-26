@@ -81,9 +81,11 @@ spec:
             # nvidia.com/gpu: 0 # {"$kpt-set":"numGpus"}
             cpu: "8"
             memory: 16Gi
+            ephemeral-storage:  10Gi
           requests:
             cpu: "4"
             memory: 4Gi
+            ephemeral-storage:  10Gi
         # volumeMounts:
         # - mountPath: /home/jupyter
         #   name: workspace
