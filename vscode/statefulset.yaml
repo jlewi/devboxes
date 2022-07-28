@@ -31,51 +31,31 @@ spec:
         component: pod
     spec:
       securityContext:
-        # 1000 = jovyan
-        runAsUser: 1000
-        runAsGroup: 100
-        # Mount the PVC as a group that the user belongs to.
-        fsGroup: 100
+      #   # 1000 = jupyter
+      #   runAsUser: 1000
+      #   runAsGroup: 100
+      #   # Mount the PVC as a group that the user belongs to.
+         fsGroup: 100
       containers:
       - env:
-        #- name: NB_PREFIX
-        #  value: /notebook/default-profile/jlewi-nb/
         - name: NB_USER
           value: jupyter
-        # TODO(jlewi): I got an error: 
-        #- name: JUPYTERLAB_DIR # Set the JUPYTERLAB_DIR so we can install extensions        
-        #  value: /home/jovyan/.jupyterlab_dir
-        # Use a stock  Jupyter image.
-        #
-        # Note: TF doesn't appear to have jupyterlab
         # Set hugging face's cache directory to be on the PD. This is for permission reasons,
         # size reasons, as well as durability.        
         - name: TRANSFORMERS_CACHE
-          value: /home/jovyan/.cache
+          value: /home/jupyter/.cache
         # Set the home directory explicitly to ensure it matches the PVC. Otherwise our home
         # directory won't be durable.
         # - name: HOME
         #   value: /home/jupyter
-        #image: tensorflow/tensorflow:2.3.1-jupyter
         image: tensorflow
         name: box
         # Explicitly set the command so we can use off the shelf notebook images.
-        # command:
-        # - tail
-        # - -f
-        # - /dev/null
-        command:        
-        - jupyter 
-        - notebook 
-        - --notebook-dir=/home/$(NB_USER)
-        - --ip=0.0.0.0 
-        - --no-browser 
-        - --allow-root 
-        - --port=8888 
-        - --NotebookApp.token='' 
-        - --NotebookApp.password='' 
-        - --NotebookApp.allow_origin='*' 
-        #- --NotebookApp.base_url=$(NB_PREFIX)
+        command:
+        #- /opt/startup.sh
+         - tail
+         - -f
+         - /dev/null
         resources:
           limits:
             # nvidia.com/gpu: 0 # {"$kpt-set":"numGpus"}
@@ -86,14 +66,17 @@ spec:
             cpu: "4"
             memory: 4Gi
             ephemeral-storage:  10Gi
-        # volumeMounts:
-        # - mountPath: /home/jupyter
-        #   name: workspace
-        # - mountPath: /dev/shm
-        #   name: dshm
-        # - mountPath: /secret/ssh-key
-        #   name: ssh
-        #   readOnly: true
+        securityContext:
+          # 1000 = jupyter
+          runAsUser: 1000
+          runAsGroup: 100        
+        volumeMounts:
+        - mountPath: /home2
+          name: workspace
+        - mountPath: /secrets
+          name: ssh
+        - mountPath: /authorized_keys
+          name: auth-keys
       # TODO(jlewi): autopilot doesn't allow NET_ADMIN
       # Will this work without it
       - name: tailscale
@@ -114,35 +97,35 @@ spec:
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
-      #   securityContext:
+      # We can't use NET_ADMIN when using Autopilot clusters
       #     capabilities:
       #       add:
       #       - NET_ADMIN
-
-      # # Start a container running theia which is an IDE
-      # - image: theiaide/theia:next # TODO(jlewi): Should we use an image which actually includes an appropriate toolchain like python?
-      #   name: theia
-      #   resources:
-      #     requests:
-      #       cpu: "4"
-      #       memory: 1.0Gi
-      #     limits:
-      #       cpu: "16"
-      #       memory: 8.0Gi
-      #   volumeMounts:
-      #   - mountPath: /mount/jovyan
-      #     name: workspace
-      #   - mountPath: /secret/ssh-key
-      #     name: ssh
-      #     readOnly: true
       serviceAccountName: dev
-      # volumes:
-      # - name: workspace
-      #   persistentVolumeClaim:
-      #     claimName: box
-      # - name: ssh
-      #   secret:
-      #     secretName: git-creds
+      volumes:
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: box
+      - name: ssh
+        # We use a projected volume: (https://kubernetes.io/docs/concepts/storage/projected-volumes/)
+        # Because we want to combine multiple sources into a single directory
+        # N.B. looks like secrets still get set with OWNER root
+        # https://github.com/kubernetes/kubernetes/issues/81089
+        # This means the .ssh directory won't be writable.
+        projected:
+          sources:
+          - secret:
+              name: jlewi-ssh
+              items:
+              - key: id_ed25519
+                path: id_ed25519
+                # See https://www.jannikarndt.de/blog/2018/03/ssh_key_as_kubernetes_secret/
+                mode: 256
+              - key: id_ed25519.pub
+                path: id_ed25519.pub
+      - name: auth-keys
+        secret: 
+          secretName: jlewi-auth-keys
       # - emptyDir:
       #     medium: Memory
       #   name: dshm

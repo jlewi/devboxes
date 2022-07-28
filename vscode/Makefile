@@ -13,14 +13,23 @@ build-dir:
 build: build-dir
 	skaffold build --timestamps=true -v info  --file-output .build/image.json
 	NEWIMAGE=$$(yq e ".builds[0].tag" .build/image.json) && \
-		@echo Built $NEWIMAGE
+		echo Built $${NEWIMAGE}
 
 build-gcb: build-dir	
 	gcloud builds submit --machine-type=n1-highcpu-32 --project=$(PROJECT) --tag=$(IMG):$(TAG) \
 		--timeout=3600 ./.build
-	@echo Built $(IMG):$(TAG)
+	echo Built $(IMG):$(TAG)
+
+get-image:
+	NEWIMAGE=$$(yq e ".builds[0].tag" .build/image.json) && \
+		echo Built $${NEWIMAGE}
 
 set-image:
   # $$ escapes the $ so that Make doesn't do the substitution but differs it to the sheel
 	NEWIMAGE=$$(yq e ".builds[0].tag" .build/image.json) && \
 	kustomize edit set image tensorflow=$${NEWIMAGE}
+
+update-image: build set-image
+
+update-pod: update-image
+	kustomize build | kubectl apply -f -

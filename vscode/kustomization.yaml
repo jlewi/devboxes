@@ -11,6 +11,6 @@ resources:
 - pvc.yaml
 - sa.yaml
 images:
-- digest: sha256:3384aebb92c6d7c4d22958b1bcc7e2443ddcf6656d78ee3464a5b010077ce7bc
+- digest: sha256:b252c6aa1e6f115fd67ced2d225ef87c0aeb05cfc6a045b322df91a4e986836d
   name: tensorflow
-  newName: gcr.io/dev-bytetoko/devbox:2c2ed3a-dirty
+  newName: gcr.io/dev-bytetoko/devbox:31bdafa-dirty

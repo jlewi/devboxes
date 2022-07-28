@@ -14,10 +14,23 @@ USER root
 
 # RUN pip install --upgrade tensorflow-federated
 
-RUN cd /tmp && \
-    wget -O vscode.deb  "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" 
+# Install supervisord as we will use it to run ssh
+RUN python -m pip install  supervisor supervisord-dependent-startup
 
-# && \
-# dpkg -i vscode.deb    
+# Install an ssh server for use with vscode
+RUN apt-get update && \
+    apt-get -y install openssh-server 
 
-# USER jupyter
+COPY supervisord.conf /etc/
+COPY sshd.conf /etc/supervisord.d/sshd.conf
+COPY sshd_config /etc/ssh/sshd_config
+COPY startup.sh /opt
+
+# Make the opt directory editable by the jupyter user
+# /etc/ssh needs to be readable by jupyter since jupyter is the user
+# we are running sshd as
+RUN chmod a+x /opt/startup.sh && \
+    chgrp -R users /opt && \
+    chgrp -R users /etc && \
+    chmod -R g+w /opt && \
+    chmod -R g+w /etc

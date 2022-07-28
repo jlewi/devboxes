@@ -1,2 +1,111 @@
-# devboxes
-Developer bokes
+# Developer boxes
+
+The purpose of this repository is to make it easy to run
+a development box on GKE. Reasons for moving
+development into a container
+
+* Needing more resources (CPU/RAM/GPU) than your local machine
+* Needing a different operating system/architecture in order to compile code
+
+  * TensorFlow federated doesn't work on M1 [tensorflow/federated#1254](https://github.com/tensorflow/federated/issues/1254)
+
+
+## Architecture
+
+The solution consists of the following pieces
+
+* A statefulset for running the container 
+
+  * We use a statefulset because this gives the pod a stable name
+
+* A PVC for storing the home directory and other files
+  * This ensures data isn't lost between pod restarts
+  * This also means we can teardown the statefulset in order to save compute costs
+    and then restart
+
+* Run tailscale in a sidecar to add the pod to your mesh to make it connectable from outside the cluster
+  * this makes it easy to connect to the pod including Jupyter
+
+* An ssh server running inside the main container 
+
+  * This can be used with [VSCode over ssh](https://code.visualstudio.com/docs/remote/ssh-tutorial) to
+    run VSCode on your local machine but edit/run code inside the container
+
+## SSH keys
+
+An SSH key is needed for two purposes
+
+  1. Connect to GitHub from the container to push/pull code
+     * Private key needs to be stored in the server
+  1. Connect to the container via ssh from your local machine (e.g. for VSCode)
+     * Private key needs to be stored on your local machine
+
+We can use the same key for both. We use a K8s secret to make the key available to the pod. We also use a configmap
+to set the SSH authorized keys on the pod.
+
+### Setup SSH keys
+
+```
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+Save the key to `${HOME}/.ssh/devbox`
+
+Don't set a passphrase
+
+Add the public key to your GitHub ssh keys.
+
+Create a k8s secret
+
+```
+kubectl create secret generic ${USER}-ssh --from-file=id_ed25519=${HOME}/.ssh/devbox --from-file=id_ed25519.pub=${HOME}/.ssh/devbox.pub
+```
+
+We mount the ssh keys into /secrets rather than `${HOME}/.ssh`. We do this because due to [kubernetes/kubernetes#81089](https://github.com/kubernetes/kubernetes/issues/81089) its not clear if 
+
+* the directory `${HOME}/.ssh` will end up being owned by
+the user the container is running 
+* will be writable (e.g. for known hosts)
+
+If instead we let `${HOME}/.ssh` be stored on the persistent volume then we can easily do manual setup and have it persist across reboots
+
+The startup script `startup.sh` starts ssh-agent ands the key in `/secrets`.
+
+Create a secret containing the SSH keys authorized to ssh into the container. This will
+be the public key(s) of the SSH keys on the machines you will be ssh'ing from
+
+```
+kubectl create secret generic ${USER}-auth-keys --from-file=authorized_keys=${HOME}/.ssh/id_ed25519.pub 
+```
+
+### ssh server
+
+We start an ssh server for use with vscode. The ssh server runs on port `2222` because it runs
+as user `jupyter` and therefore can't bind port `22` which is privileged.
+
+For more info see [Run SSHD as non root user](https://www.golinuxcloud.com/run-sshd-as-non-root-user-without-sudo/)
+
+### Configure VSCode
+
+Follow the instructions for [Remote development using ssh](https://code.visualstudio.com/docs/remote/ssh#_ssh-hostspecific-settings)
+
+You will need to edit your host settings in `~/.ssh/config to set username and port like this
+
+```
+Host 100.92.148.119
+  HostName 100.92.148.119
+  User jupyter
+  Port 2222
+```
+
+The hostname should be the ip addressed assigned by tailscale.
+
+# Troublehsooting
+
+ssh'ing into the node hanges
+
+* Make sure you include jupyter e.g. `ssh jupyter@HOSTNAME -p 2222`
+
+# References
+
+[Run SSHD as non root user](https://www.golinuxcloud.com/run-sshd-as-non-root-user-without-sudo/)
