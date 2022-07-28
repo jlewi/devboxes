@@ -18,6 +18,10 @@ build:
       requests:
         cpu: 4
         memory: 8Gi
-        ephemeralStorage: 10Gi
+        ephemeralStorage: 30Gi
+      limits:
+        cpu: 4
+        memory: 8Gi
+        ephemeralStorage: 30Gi
 deploy:
   kustomize: {}

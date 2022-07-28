@@ -31,5 +31,7 @@ set-image:
 
 update-image: build set-image
 
-update-pod: update-image
+apply:
 	kustomize build | kubectl apply -f -
+
+update-pod: update-image apply

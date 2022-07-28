@@ -100,6 +100,38 @@ Host 100.92.148.119
 
 The hostname should be the ip addressed assigned by tailscale.
 
+## PVC and Home
+
+To store the home directory and other files on durable storage we do the following
+
+* Mount a PVC at /storage
+* Set HOME to /storage/jupyter
+
+We hit a couple issues that led to this approach as opposed to
+
+* Mounting the PVC at /home/jupyter
+* Mounting the PVC at /home
+
+When we mounted the PVC at /home/jupyter the user/group permissions of the drive caused
+SSH to complain when using the SSH keys in /home/jupyter/.ssh to allow ssh'ing into the 
+pod. SSH likes the home directory to only be readable by the user. However, it looks like the
+owner of the directory at which the PVC is mounted is root.
+
+Mounting the PVC one level higher at /home fixed this. However, I observed that some other
+ephmeral volume was being mounted at /home/jupyter and therefore the home directory wasn't
+actually on PVC. This was evident from running `mount`
+
+```
+/dev/sdb on /home type ext4 (rw,relatime)
+/dev/sda1 on /home/jupyter type ext4 (rw,nosuid,nodev,relatime,commit=30)
+```
+
+Inspecting the docker image using [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane.md) indicates that the Dockerfile adds the Volume `/home/jupyter`. I think this causes 
+a volume to be mounted there by the kubelet if no volume is explicitly mounted.
+
+
+
+
 # Troublehsooting
 
 ssh'ing into the node hanges

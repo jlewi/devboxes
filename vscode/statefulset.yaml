@@ -46,9 +46,10 @@ spec:
           value: /home/jupyter/.cache
         # Set the home directory explicitly to ensure it matches the PVC. Otherwise our home
         # directory won't be durable.
-        # - name: HOME
-        #   value: /home/jupyter
+        - name: HOME
+          value: /storage/jupyter
         image: tensorflow
+        #image: ubuntu:20.04
         name: box
         # Explicitly set the command so we can use off the shelf notebook images.
         command:
@@ -71,7 +72,7 @@ spec:
           runAsUser: 1000
           runAsGroup: 100        
         volumeMounts:
-        - mountPath: /home2
+        - mountPath: /storage
           name: workspace
         - mountPath: /secrets
           name: ssh

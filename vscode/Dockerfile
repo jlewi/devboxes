@@ -12,7 +12,9 @@ FROM $BASE_IMAGE
 
 USER root
 
-# RUN pip install --upgrade tensorflow-federated
+# Install TensorFlow federated. This should pull in the corresponding version of
+# TensorFlow.
+RUN pip install --upgrade tensorflow-federated
 
 # Install supervisord as we will use it to run ssh
 RUN python -m pip install  supervisor supervisord-dependent-startup
@@ -34,3 +36,11 @@ RUN chmod a+x /opt/startup.sh && \
     chgrp -R users /etc && \
     chmod -R g+w /opt && \
     chmod -R g+w /etc
+
+# Set the home directory for jupyter to a location that will be stored on a PVC.
+# We intentially don't create the directory because we only want the directory to exist
+# if the PVC is properly mounted; this helps avoid problems caused by confusing the overlayfs filesystem
+# and the PVC. As noted in the readme when we tried mounting the PVC at /home
+# ephemeral storage still got mounted at /home/jupyter because of VOLUMEs directive
+# in the base Dockerfile so we can't use /home/jupyter.
+RUN usermod -d /storage/jupyter jupyter
