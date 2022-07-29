@@ -11,7 +11,9 @@ build-dir:
 	mkdir  -p ./.build
 
 build: build-dir
-	skaffold build --timestamps=true -v info  --file-output .build/image.json
+	# Enable debug logs to try to figure out what's causing 
+	# error copying logs to stdout: invalid write result
+	skaffold build -v debug --timestamps=true  --file-output .build/image.json
 	NEWIMAGE=$$(yq e ".builds[0].tag" .build/image.json) && \
 		echo Built $${NEWIMAGE}
 

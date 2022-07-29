@@ -130,10 +130,27 @@ Inspecting the docker image using [crane](https://github.com/google/go-container
 a volume to be mounted there by the kubelet if no volume is explicitly mounted.
 
 
+## Building with Kaniko vs. GCB
+
+I originally tried Kaniko but ran into issue [GoogleContainerTools/skaffold#7701](https://github.com/GoogleContainerTools/skaffold/issues/7701) with not being able to increase
+ephmeralStorage. So I switched to GCB.
+
+With GCB I had to use a 32 CPU machine; it was timing out trying to push the image with 8 CPU.
 
 
 # Troublehsooting
 
+## skaffold build & GCB - error copying logs to stdout
+
+When using `skaffold` with GCB `skaffold build` exits with error
+
+```
+error copying logs to stdout: invalid write result
+```
+
+Running `skaffold build` with verbose logging e.g. `skaffold build -v` apears to fix this.
+
+## 
 ssh'ing into the node hanges
 
 * Make sure you include jupyter e.g. `ssh jupyter@HOSTNAME -p 2222`

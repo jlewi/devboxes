@@ -4,7 +4,7 @@ metadata:
   name: vscode
 build:
   artifacts:
-  - image: gcr.io/dev-bytetoko/devbox
+  - image: gcr.io/dev-bytetoko/quickstart-image
     context: .
     kaniko:
       dockerfile: Dockerfile
@@ -12,8 +12,7 @@ build:
   # Try using googleCloudBuild rather than building in cluster.
   googleCloudBuild:
     projectId: dev-bytetoko
-    machineType: E2_HIGHCPU_32
-    timeout: 3600s
+    machineType: E2_HIGHCPU_8
   # cluster:
   #   namespace: kaniko
   #   serviceAccount: kaniko
