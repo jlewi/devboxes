@@ -1,0 +1,11 @@
+{
+  "base": [ "conda-forge" ],
+  "tf": [ "conda-forge" ],
+  "pytorch": [ "pytorch", "pytorch-test", "fastai", "nvidia", "conda-forge" ],
+  "pytorch-nv": [ "pytorch", "conda-forge" ],
+  "xgboost": [ "conda-forge" ],
+  "sklearn": [ "conda-forge" ],
+  "rapids": [ "rapidsai", "nvidia", "conda-forge" ],
+  "theia": [ "conda-forge" ],
+  "jax": [ "conda-forge" ]
+}
