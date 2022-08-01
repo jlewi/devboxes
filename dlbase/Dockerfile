@@ -6,7 +6,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 COPY aptget-requirements.txt /aptget-requirements.txt
 COPY packages /opt/google
 RUN DEBIAN_FRONTEND=noninteractive /opt/google/setup.sh
-ENV ANACONDA_PYTHON_VERSION=3.9
+ENV ANACONDA_PYTHON_VERSION=3.10
 ENV DL_ANACONDA_HOME=/opt/conda
 RUN DEBIAN_FRONTEND=noninteractive /opt/google/conda/provision_conda.sh
 ENV PATH=/opt/conda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -30,7 +30,3 @@ ARG CONTAINER_URL
 ENV CONTAINER_NAME=base-cpu
 ENV CONTAINER_URL=us-docker.pkg.dev/deeplearning-platform-release/gcr.io/base-cpu:nightly-2022-07-01
 RUN /opt/google/conda/install_to_env.sh base
-#RUN cd /opt/google/licenses && \
-#    export GOOGLE_APPLICATION_CREDENTIALS="/run/secrets/creds.json" && \
-#    chmod +x query_licenses.sh && \
-#    ./query_licenses.sh

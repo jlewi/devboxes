@@ -42,4 +42,3 @@ conda install -y "${CHANNELS[@]}" \
   "python=${ANACONDA_PYTHON_VERSION}" \
   --file=${DIRECTORY}/python_packages.txt \
   || { echo "Install of ${DIRECTORY}/python_packages.txt failed." && exit 1; }
-

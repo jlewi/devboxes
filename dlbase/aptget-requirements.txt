@@ -1,3 +1,4 @@
 emacs
+git
 jq
 wget

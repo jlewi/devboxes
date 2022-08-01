@@ -4,7 +4,10 @@
 set -x
 
 DL_ANACONDA_HOME="${DL_ANACONDA_HOME:-/opt/conda}"
-ANACONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh"
+# I think the python version here (python 3.9) is the version of Python used by conda itself.
+# The environments created by CONDA can use a different version of python. That version
+# gets set in install_to_env by the conda install command.
+ANACONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh"
 
 # Workaround for https://github.com/ContinuumIO/anaconda-issues/issues/11148
 mkdir -p "/root/.conda"
