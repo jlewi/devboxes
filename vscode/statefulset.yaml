@@ -53,10 +53,10 @@ spec:
         name: box
         # Explicitly set the command so we can use off the shelf notebook images.
         command:
-        #- /opt/startup.sh
-         - tail
-         - -f
-         - /dev/null
+        - /opt/startup.sh
+        #  - tail
+        #  - -f
+        #  - /dev/null
         resources:
           limits:
             # nvidia.com/gpu: 0 # {"$kpt-set":"numGpus"}

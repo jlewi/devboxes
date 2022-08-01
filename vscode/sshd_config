@@ -25,7 +25,7 @@ Port 2222
 # We can't use the host key in /etc/ssh because it won't have the right
 # file permissions for use as a key.
 # The host key should be created by the startup script
-HostKey /home/jupyter/.ssh/host_key
+HostKey /storage/jupyter/.ssh/host_key
 
 # Ciphers and keying
 #RekeyLimit default none

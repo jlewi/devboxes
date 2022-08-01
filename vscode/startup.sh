@@ -25,7 +25,8 @@ fi
 # Copying the secrets is easier then dealing with ssh-agent
 # With ssh agent we would need to add the commands to set SSH_AGENT_PID and SSH_AUTH_SOCK
 # to our bash profile so that ever shell we have has them set
-cp /secrets/id_ed25519* ${HOME}/.ssh/
+# Override any existing secrets in the home directory so we always use the latest ones.
+cp -f /secrets/id_ed25519* ${HOME}/.ssh/
 
 chmod 0700 ${HOME}
 chmod 0700 ${HOME}/.ssh/
