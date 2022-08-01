@@ -68,7 +68,7 @@ spec:
             memory: 4Gi
             ephemeral-storage:  10Gi
         securityContext:
-          # 1000 = jupyter
+          # 1000 = jupyter          
           runAsUser: 1000
           runAsGroup: 100        
         volumeMounts:

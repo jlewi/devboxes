@@ -1,12 +1,6 @@
-# This is a custom jupyter image
-#
-# It includes additional dependencies like
-# 1. Update kfp client
-# 2. coder https://coder.com/ so we can run coder in the pod and use it as en editor
-#
-# The motivation for using the same image as the jupyter image is so that the set
-# of python liraries is the same for intellisense.
-ARG BASE_IMAGE=gcr.io/deeplearning-platform-release/base-cpu
+# Dockerfile to build a suitable image for running TensorFlowFederated
+# and vscode.
+ARG BASE_IMAGE TOBESETBYSKAFFOLD
 
 FROM $BASE_IMAGE
 

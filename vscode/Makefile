@@ -6,6 +6,9 @@ CONTEXT=label-bot-dev
 PROJECT ?= dev-bytetoko
 IMG ?= gcr.io/${PROJECT}/de
 
+# Use the hacked version of skaffold to try to debug the build.
+SKAFFOLD ?= /Users/jlewi/git_skaffold/out/skaffold
+
 .PHONY: build
 build-dir: 
 	mkdir  -p ./.build
@@ -13,7 +16,7 @@ build-dir:
 build: build-dir
 	# Enable debug logs to try to figure out what's causing 
 	# error copying logs to stdout: invalid write result
-	skaffold build -v debug --timestamps=true  --file-output .build/image.json
+	$(SKAFFOLD) build -v debug --timestamps=true  --file-output .build/image.json
 	NEWIMAGE=$$(yq e ".builds[0].tag" .build/image.json) && \
 		echo Built $${NEWIMAGE}
 
