@@ -9,6 +9,9 @@ build: build-dir
 	# error copying logs to stdout: invalid write result
 	$(SKAFFOLD) build -v info --timestamps=true  --file-output .build/image.json
 
+# update the base image in the vscode image
+update-image: build
+	./set_image.sh
 
 # Deploy the testpod
 apply:

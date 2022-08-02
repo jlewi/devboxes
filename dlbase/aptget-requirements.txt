@@ -1,4 +1,8 @@
 emacs
+g++
+gcc
 git
 jq
+linux-libc-dev
+make
 wget

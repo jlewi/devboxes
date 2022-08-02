@@ -8,7 +8,12 @@ USER root
 
 # Install TensorFlow federated. This should pull in the corresponding version of
 # TensorFlow.
-RUN pip install --upgrade tensorflow-federated
+RUN pip install --upgrade tensorflow-federated==0.32.0
+
+# See: https://github.com/bytetoko/devboxes/issues/3
+# we need to override the version of pandas installed by tensorflow-federated
+# as workaround for bytetoko/devboxes#3
+RUN pip install --upgrade pandas~=1.4.3
 
 # Install supervisord as we will use it to run ssh
 RUN python -m pip install  supervisor supervisord-dependent-startup

@@ -4,30 +4,30 @@ metadata:
   name: vscode
 build:
   artifacts:
-  - image: gcr.io/dev-bytetoko/devbox
-    context: .
-    kaniko:    
-      dockerfile: Dockerfile
-      buildArgs: 
-        BASE_IMAGE: gcr.io/dev-bytetoko/google-deep-learning/base-cpu:5d10c9d@sha256:27509b1bbda817ce4cbc09d75658ef58acf0a106f0b2692eb092e3cb72ff0d60
-      logTimestamp: true
+    - image: gcr.io/dev-bytetoko/devbox
+      context: .
+      kaniko:
+        dockerfile: Dockerfile
+        buildArgs:
+          BASE_IMAGE: gcr.io/dev-bytetoko/google-deep-learning/base-cpu:70bae58-dirty@sha256:2956e095a09b22d358f78e34d7b807469e115d68733fb7539580a0318a8c6971
+        logTimestamp: true
   # Due to https://github.com/GoogleContainerTools/skaffold/issues/7701
   # Try using googleCloudBuild rather than building in cluster.
   googleCloudBuild:
     projectId: dev-bytetoko
     machineType: E2_HIGHCPU_32
     timeout: 3600s
-  # cluster:
-  #   namespace: kaniko
-  #   serviceAccount: kaniko
-  #   resources:
-  #     requests:
-  #       cpu: 4
-  #       memory: 8Gi
-  #       ephemeralStorage: 30Gi
-  #     limits:
-  #       cpu: 4
-  #       memory: 8Gi
-  #       ephemeralStorage: 30Gi
+    # cluster:
+    #   namespace: kaniko
+    #   serviceAccount: kaniko
+    #   resources:
+    #     requests:
+    #       cpu: 4
+    #       memory: 8Gi
+    #       ephemeralStorage: 30Gi
+    #     limits:
+    #       cpu: 4
+    #       memory: 8Gi
+    #       ephemeralStorage: 30Gi
 deploy:
   kustomize: {}
