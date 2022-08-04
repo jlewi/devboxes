@@ -31,10 +31,8 @@ spec:
         component: pod
     spec:
       securityContext:
-      #   # 1000 = jupyter
-      #   runAsUser: 1000
-      #   runAsGroup: 100
-      #   # Mount the PVC as a group that the user belongs to.
+         # Mount the PVC as a group that the user belongs to.
+         # 100 is the users group
          fsGroup: 100
       containers:
       - env:

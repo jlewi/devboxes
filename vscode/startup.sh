@@ -17,6 +17,8 @@ if [ ! -f ${HOME}/.ssh/host_key ]; then
 	ssh-keygen -t ed25519 -N "" -f ${HOME}/.ssh/host_key
 fi
 
+chmod 0600 ${HOME}/.ssh/host_key
+
 # Add the authorized ssh key
 if [ ! -f ${HOME}/.ssh/authorized_keys ]; then
 	cp /authorized_keys/authorized_keys ${HOME}/.ssh/authorized_keys 

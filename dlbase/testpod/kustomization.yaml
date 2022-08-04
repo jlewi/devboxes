@@ -8,6 +8,6 @@ labels:
 resources:
 - statefulset.yaml
 images:
-- digest: sha256:2956e095a09b22d358f78e34d7b807469e115d68733fb7539580a0318a8c6971
+- digest: sha256:9b104fade611897290902f8492fce2cd2240f25e5e8f6a54cf310c82e689f820
   name: base-cpu
-  newName: gcr.io/dev-bytetoko/google-deep-learning/base-cpu:70bae58-dirty
+  newName: gcr.io/dev-bytetoko/google-deep-learning/base-cpu:9b0745c-dirty

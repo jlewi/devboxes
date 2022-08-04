@@ -42,3 +42,7 @@ conda install -y "${CHANNELS[@]}" \
   "python=${ANACONDA_PYTHON_VERSION}" \
   --file=${DIRECTORY}/python_packages.txt \
   || { echo "Install of ${DIRECTORY}/python_packages.txt failed." && exit 1; }
+
+# Install some additional packages using pip.
+# These are packages that don't appear to be available in CONDA
+/opt/conda/bin/pip3 install -r ${DIRECTORY}/requirements.txt
