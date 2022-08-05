@@ -1,7 +1,9 @@
+dnsutils
 emacs
 g++
 gcc
 git
+inetutils-ping
 jq
 linux-libc-dev
 make

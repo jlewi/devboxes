@@ -30,6 +30,7 @@ fi
 # Override any existing secrets in the home directory so we always use the latest ones.
 cp -f /secrets/id_ed25519* ${HOME}/.ssh/
 
+chmod 0600 ${HOME}/.ssh/id_ed25519
 chmod 0700 ${HOME}
 chmod 0700 ${HOME}/.ssh/
 chmod 0600 ${HOME}/.ssh/authorized_keys
