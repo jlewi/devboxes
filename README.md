@@ -140,6 +140,39 @@ With GCB I had to use a 32 CPU machine; it was timing out trying to push the ima
 
 # Troublehsooting
 
+## SSH timeout
+
+Try confirm if this is an issue with tailscale or ssh.
+
+1. Check the ssh logs `/tmp/sshd.log`
+
+1. Try ssh'ing to the pod from within the pod itself 
+
+   * i.e. use `kubectl exec` to start a shell in the pod and then run `ssh` in the pod
+
+   * If this succeeds then it is most likely a networking issue with tailscale
+
+1. Try starting an HTTP server on the pod and seeing if you can connect to it
+   ```
+   python -m http.server 8000
+   ```
+
+1. If it appears to be an issue with tailscale then login to tailscale and try removing the device in tailscale
+
+1. Check the logs of tailscale; there will most likely be a link to authenticate to tailscale
+   * Use the link to reauthenticate
+
+## Starting an HTTP server
+
+You can start an http server on the dev box by doing
+
+```
+python3 -m http.server 8000
+```
+
+This is useful if your trying to debug ssh issues and need to figure
+out whether its an ssh issue or a network/tailscale issue.
+
 ## skaffold build & GCB - error copying logs to stdout
 
 When using `skaffold` with GCB `skaffold build` exits with error

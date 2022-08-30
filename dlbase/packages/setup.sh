@@ -18,7 +18,7 @@ apt-get --allow-releaseinfo-change -o Acquire::Check-Valid-Until=false update -y
 apt-get install --no-install-recommends -y -q        $(grep -vE "^\s*#" aptget-requirements.txt | tr "\n" " ")
 rm -rf /var/lib/apt/lists/*      
 
-# Install gcloud
+# Install gcloud & kubectl
 apt-get --allow-releaseinfo-change update -y 
 apt-get install -y dirmngr 
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B57C5C2836F4BEB 
@@ -31,7 +31,7 @@ apt-get install -y apt-transport-https ca-certificates gnupg
 echo "deb http://packages.cloud.google.com/apt gcsfuse-focal main" | tee /etc/apt/sources.list.d/gcsfuse.list 
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - 
 apt-get --allow-releaseinfo-change update -y 
-apt-get install -y google-cloud-sdk && apt-get install -y gcsfuse 
+apt-get install -y google-cloud-sdk kubectl && apt-get install -y gcsfuse 
 rm -rf /var/lib/apt/lists/*
 
 if dpkg -s libnccl2; then         
@@ -40,3 +40,11 @@ if dpkg -s libnccl2; then
     apt-get --allow-releaseinfo-change update 
     apt install -y google-fast-socket;     
 fi
+
+# Install kustomize
+cd /tmp
+wget -O kustomize_v4.5.7_linux_amd64.tar.gz  \
+    https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.7/kustomize_v4.5.7_linux_amd64.tar.gz
+tar -xvf kustomize_v4.5.7_linux_amd64.tar.gz
+mv kustomize /usr/local/bin
+rm kustomize_v4.5.7_linux_amd64.tar.gz

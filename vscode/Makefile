@@ -40,3 +40,7 @@ apply:
 	kustomize build | kubectl apply -f -
 
 update-pod: update-image apply
+
+# TODO(jeremy): How can we do a better job of filtering this?
+cleanup:
+	kubectl -n boxes delete statefulsets jlewi-box
