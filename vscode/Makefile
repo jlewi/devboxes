@@ -36,8 +36,13 @@ set-image:
 
 update-image: build set-image
 
-apply:
-	kustomize build | kubectl apply -f -
+hydrate:
+	rm -rf  .build/hydrated
+	mkdir -p .build/hydrated
+	kustomize build -o .build/hydrated .
+
+apply: hydrate
+	kubectl apply -f .build/hydrated
 
 update-pod: update-image apply
 

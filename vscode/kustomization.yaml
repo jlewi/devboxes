@@ -11,6 +11,9 @@ resources:
 - pvc.yaml
 - sa.yaml
 images:
+- digest: sha256:9a0949bbb4c2c02766e1b5fa396da010fb8cb0b9018cb5e43545d1fe9bfac2b7
+  name: tailscale
+  newName: ghcr.io/tailscale/tailscale:v1.26.2
 - digest: sha256:8e9f3aa0a5f9403b11f36d1b2b65c4dd7e9a4e2a648ea058bcf11b847b881d67
   name: tensorflow
-  newName: gcr.io/dev-bytetoko/devbox:6e4be8e-dirty
+  newName: gcr.io/dev-bytetoko/devbox:5c65f19

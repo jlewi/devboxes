@@ -79,7 +79,7 @@ spec:
       # TODO(jlewi): autopilot doesn't allow NET_ADMIN
       # Will this work without it
       - name: tailscale
-        image: ghcr.io/tailscale/tailscale:latest
+        image: tailscale
         env:
           # Store the state in a k8s secret
           # Can this be the same secret as TS_AUTH_KEY?
