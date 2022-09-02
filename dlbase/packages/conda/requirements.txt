@@ -1,2 +1,7 @@
+autoflake
+black
+isort
+grpcio-tools
 nest_asyncio
 tenacity
+pytest

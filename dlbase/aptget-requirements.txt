@@ -8,3 +8,5 @@ jq
 linux-libc-dev
 make
 wget
+unzip
+zip

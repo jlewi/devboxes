@@ -14,6 +14,6 @@ images:
 - digest: sha256:9a0949bbb4c2c02766e1b5fa396da010fb8cb0b9018cb5e43545d1fe9bfac2b7
   name: tailscale
   newName: ghcr.io/tailscale/tailscale:v1.26.2
-- digest: sha256:8e9f3aa0a5f9403b11f36d1b2b65c4dd7e9a4e2a648ea058bcf11b847b881d67
+- digest: sha256:a947b8169e0dd341bad4ae300a81859adc4b1f2b0873a07b5543050802ca8ede
   name: tensorflow
-  newName: gcr.io/dev-bytetoko/devbox:5c65f19
+  newName: gcr.io/dev-bytetoko/devbox:f6226de-dirty

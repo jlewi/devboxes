@@ -29,4 +29,13 @@ ARG CONTAINER_NAME
 ARG CONTAINER_URL
 ENV CONTAINER_NAME=base-cpu
 ENV CONTAINER_URL=us-docker.pkg.dev/deeplearning-platform-release/gcr.io/base-cpu:nightly-2022-07-01
+ENV PATH=/opt/conda/bin:$PATH
 RUN /opt/google/conda/install_to_env.sh base
+
+# Install proto tool chain
+RUN mkdir -p /usr/local/proto && \
+    cd /usr/local/proto && \
+    wget https://github.com/protocolbuffers/protobuf/releases/download/v21.5/protoc-21.5-linux-x86_64.zip && \
+    unzip protoc-21.5-linux-x86_64.zip && \
+    rm protoc-21.5-linux-x86_64.zip
+   
