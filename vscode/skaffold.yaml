@@ -9,7 +9,7 @@ build:
       kaniko:
         dockerfile: Dockerfile
         buildArgs:
-          BASE_IMAGE: gcr.io/dev-bytetoko/google-deep-learning/base-cpu:f6226de-dirty@sha256:7adbc4d03fb770a68b18a8bffd2c84d8552153d5b06cf677edb8e57c61d487a7
+          BASE_IMAGE: gcr.io/dev-bytetoko/google-deep-learning/base-cpu:3fa9629-dirty@sha256:4ac4eb33fcf0dd14dadda226d05b42fd825a0d707d0ad9028763c0624722fea8
         logTimestamp: true
   # Due to https://github.com/GoogleContainerTools/skaffold/issues/7701
   # Try using googleCloudBuild rather than building in cluster.

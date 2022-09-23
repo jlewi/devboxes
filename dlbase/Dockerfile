@@ -32,6 +32,15 @@ ENV CONTAINER_URL=us-docker.pkg.dev/deeplearning-platform-release/gcr.io/base-cp
 ENV PATH=/opt/conda/bin:$PATH
 RUN /opt/google/conda/install_to_env.sh base
 
+# Install golang
+RUN cd /tmp && \
+    wget https://go.dev/dl/go1.19.linux-amd64.tar.gz && \
+    tar -xvf go1.19.linux-amd64.tar.gz && \
+    mv go /usr/local/ && \
+    rm go1.19.linux-amd64.tar.gz
+
+ENV PATH=$PATH:/usr/local/go/bin
+
 # Install proto tool chain
 RUN mkdir -p /usr/local/proto && \
     cd /usr/local/proto && \
@@ -39,3 +48,7 @@ RUN mkdir -p /usr/local/proto && \
     unzip protoc-21.5-linux-x86_64.zip && \
     rm protoc-21.5-linux-x86_64.zip
    
+ENV PATH=$PATH:/usr/local/proto/bin
+
+# Install golang protoc compiler
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
