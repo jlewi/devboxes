@@ -10,4 +10,4 @@ resources:
 images:
 - digest: sha256:4ac4eb33fcf0dd14dadda226d05b42fd825a0d707d0ad9028763c0624722fea8
   name: base-cpu
-  newName: gcr.io/dev-bytetoko/google-deep-learning/base-cpu:3fa9629-dirty
+  newName: gcr.io/dev-bytetoko/google-deep-learning/base-cpu:a0d7fa8
