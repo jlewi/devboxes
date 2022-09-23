@@ -43,3 +43,6 @@ RUN chmod a+x /opt/startup.sh && \
 # ephemeral storage still got mounted at /home/jupyter because of VOLUMEs directive
 # in the base Dockerfile so we can't use /home/jupyter.
 RUN usermod -d /storage/jupyter jupyter
+
+# Set GOPATH to a directory on the PVC so it will persist across reboots.
+ENV GOAPTH /storage/jupyter/go
